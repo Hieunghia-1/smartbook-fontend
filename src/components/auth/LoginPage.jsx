@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faSignInAlt, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from '../context/AuthContext';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -14,12 +15,12 @@ function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Validate form
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email là bắt buộc';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email không hợp lệ';
+    if (!formData.username) newErrors.username = 'Email là bắt buộc';
     if (!formData.password) newErrors.password = 'Mật khẩu là bắt buộc';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -47,20 +48,23 @@ function LoginPage() {
 
     try {
       // Gọi API login
-      const response = await axios.post('https://api.yourdomain.com/auth/login', {
-        email: formData.email,
+      const response = await axios.post('http://localhost:3001/api/auth/login', {
+        username: formData.username,
         password: formData.password
       });
 
       // Xử lý kết quả thành công
-      const { token, user } = response.data;
-      
-      // Lưu token vào localStorage hoặc cookie
-      localStorage.setItem('authToken', token);
-      
+      const { token } = response.data;
+
+      login(token, {
+        id: 1, 
+        name: 'Admin User', 
+        role: 'admin' 
+      });
+
       // Chuyển hướng đến trang dashboard
-      navigate('/dashboard');
-      
+      // navigate('/dashboard');
+
     } catch (error) {
       // Xử lý lỗi từ API
       if (error.response) {
@@ -108,23 +112,23 @@ function LoginPage() {
               <form onSubmit={handleSubmit}>
                 {/* Email Field */}
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">Tên đăng nhập</label>
                   <div className="input-group">
                     <span className="input-group-text">
                       <FontAwesomeIcon icon={faUser} />
                     </span>
                     <input
-                      type="email"
-                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                      id="email"
-                      name="email"
-                      value={formData.email}
+                      type="text"
+                      className={`form-control ${errors.username ? 'is-invalid' : ''}`}
+                      id="username"
+                      name="username"
+                      value={formData.username}
                       onChange={handleChange}
-                      placeholder="Nhập email"
+                      placeholder="Nhập tên đăng nhập"
                       disabled={isSubmitting}
                     />
-                    {errors.email && (
-                      <div className="invalid-feedback">{errors.email}</div>
+                    {errors.username && (
+                      <div className="invalid-feedback">{errors.username}</div>
                     )}
                   </div>
                 </div>

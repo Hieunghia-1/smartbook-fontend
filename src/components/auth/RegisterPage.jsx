@@ -63,12 +63,12 @@ function RegisterPage() {
 
     try {
       // Gọi API đăng ký
-      const response = await axios.post('https://api.yourdomain.com/auth/register', {
+      const response = await axios.post('http://localhost:3001/api/auth/register', {
         name: formData.fullName,
+        username: formData.email,
         email: formData.email,
         phone: formData.phone,
-        password: formData.password,
-        password_confirmation: formData.confirmPassword
+        password: formData.password
       });
 
       // Xử lý kết quả thành công
