@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock, faSignInAlt, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUser,
+  faLock,
+  faSignInAlt,
+  faCircleNotch,
+  faExclamationTriangle
+} from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '../context/AuthContext';
+import { loginAPI } from '../api/authApi';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect nếu đã đăng nhập
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Validate form
   const validate = () => {
     const newErrors = {};
-    if (!formData.username) newErrors.username = 'Email là bắt buộc';
+    if (!formData.username.trim()) newErrors.username = 'Tên đăng nhập là bắt buộc';
     if (!formData.password) newErrors.password = 'Mật khẩu là bắt buộc';
+    else if (formData.password.length < 6) newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -34,7 +50,9 @@ function LoginPage() {
       [name]: value
     }));
     // Clear error when typing
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
     if (apiError) setApiError('');
   };
 
@@ -48,44 +66,61 @@ function LoginPage() {
 
     try {
       // Gọi API login
-      const response = await axios.post('http://localhost:3001/api/auth/login', {
+      const params = {
         username: formData.username,
         password: formData.password
-      });
+      }
+      const { token, user } = await loginAPI(params);
 
-      // Xử lý kết quả thành công
-      const { token } = response.data;
+      if (!user || !user.role) {
+        throw new Error('Thông tin người dùng không hợp lệ');
+      }
 
+      // Lưu thông tin đăng nhập
       login(token, {
-        id: 1, 
-        name: 'Admin User', 
-        role: 'admin' 
+        id: user.id,
+        name: user.name || formData.username,
+        email: user.email || formData.username,
+        role: user.role
       });
 
-      // Chuyển hướng đến trang dashboard
-      // navigate('/dashboard');
+      // Chuyển hướng sẽ được xử lý trong useEffect khi isAuthenticated thay đổi
 
     } catch (error) {
-      // Xử lý lỗi từ API
+      console.error('Login error:', error);
+
+      let errorMessage = 'Đã xảy ra lỗi. Vui lòng thử lại sau';
+
       if (error.response) {
         // Lỗi từ phía server (4xx, 5xx)
         switch (error.response.status) {
+          case 400:
+            errorMessage = 'Dữ liệu không hợp lệ';
+            break;
           case 401:
-            setApiError('Email hoặc mật khẩu không đúng');
+            errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng';
+            break;
+          case 403:
+            errorMessage = 'Tài khoản của bạn không có quyền truy cập';
             break;
           case 429:
-            setApiError('Bạn đã đăng nhập quá nhiều lần. Vui lòng thử lại sau 5 phút');
+            errorMessage = 'Bạn đã đăng nhập quá nhiều lần. Vui lòng thử lại sau 5 phút';
+            break;
+          case 500:
+            errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau';
             break;
           default:
-            setApiError('Đã xảy ra lỗi. Vui lòng thử lại sau');
+            errorMessage = error.response.data?.message || errorMessage;
         }
       } else if (error.request) {
         // Không nhận được phản hồi từ server
-        setApiError('Không thể kết nối đến máy chủ');
-      } else {
+        errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng';
+      } else if (error.message) {
         // Lỗi khác
-        setApiError('Lỗi hệ thống: ' + error.message);
+        errorMessage = error.message;
       }
+
+      setApiError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -93,10 +128,10 @@ function LoginPage() {
 
   return (
     <div className="container-fluid vh-100 bg-light">
-      <div className="root row justify-content-center align-items-center h-100">
-        <div className="col-md-6 col-lg-4">
+      <div className="row justify-content-center align-items-center h-100">
+        <div className="col-md-8 col-lg-6 col-xl-4">
           <div className="card shadow-sm">
-            <div className="card-body p-5">
+            <div className="card-body p-4 p-md-5">
               <div className="text-center mb-4">
                 <h3 className="fw-bold text-primary">ĐĂNG NHẬP HỆ THỐNG</h3>
                 <p className="text-muted">Vui lòng nhập thông tin tài khoản</p>
@@ -104,15 +139,16 @@ function LoginPage() {
 
               {/* Hiển thị lỗi API */}
               {apiError && (
-                <div className="alert alert-danger" role="alert">
-                  {apiError}
+                <div className="alert alert-danger d-flex align-items-center" role="alert">
+                  <FontAwesomeIcon icon={faExclamationTriangle} className="me-2" />
+                  <div>{apiError}</div>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit}>
-                {/* Email Field */}
+              <form onSubmit={handleSubmit} noValidate>
+                {/* Username Field */}
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Tên đăng nhập</label>
+                  <label htmlFor="username" className="form-label">Tên đăng nhập</label>
                   <div className="input-group">
                     <span className="input-group-text">
                       <FontAwesomeIcon icon={faUser} />
@@ -126,6 +162,8 @@ function LoginPage() {
                       onChange={handleChange}
                       placeholder="Nhập tên đăng nhập"
                       disabled={isSubmitting}
+                      autoComplete="username"
+                      autoFocus
                     />
                     {errors.username && (
                       <div className="invalid-feedback">{errors.username}</div>
@@ -134,14 +172,14 @@ function LoginPage() {
                 </div>
 
                 {/* Password Field */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <label htmlFor="password" className="form-label">Mật khẩu</label>
                   <div className="input-group">
                     <span className="input-group-text">
                       <FontAwesomeIcon icon={faLock} />
                     </span>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                       id="password"
                       name="password"
@@ -149,7 +187,16 @@ function LoginPage() {
                       onChange={handleChange}
                       placeholder="Nhập mật khẩu"
                       disabled={isSubmitting}
+                      autoComplete="current-password"
                     />
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={isSubmitting}
+                    >
+                      <FontAwesomeIcon icon={showPassword ? faLock : faUser} />
+                    </button>
                     {errors.password && (
                       <div className="invalid-feedback">{errors.password}</div>
                     )}
@@ -169,15 +216,15 @@ function LoginPage() {
                       Ghi nhớ đăng nhập
                     </label>
                   </div>
-                  <a href="/forgot-password" className="text-decoration-none">
+                  <Link to="/forgot-password" className="text-decoration-none">
                     Quên mật khẩu?
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="btn btn-primary w-100 py-2"
+                  className="btn btn-primary w-100 py-2 mb-3"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -192,11 +239,14 @@ function LoginPage() {
                     </>
                   )}
                 </button>
-              </form>
 
-              <div className="text-center mt-4">
-                <p className="text-muted">Chưa có tài khoản? <a href="/register" className="text-decoration-none">Đăng ký ngay</a></p>
-              </div>
+                <div className="text-center">
+                  <p className="text-muted mb-0">Chưa có tài khoản?</p>
+                  <Link to="/register" className="text-decoration-none">
+                    Đăng ký tài khoản mới
+                  </Link>
+                </div>
+              </form>
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ function Dashboard() {
                 <Body />
                 <Footer />
             </div>
+
         </AuthProvider>
     )
 }

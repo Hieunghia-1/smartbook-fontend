@@ -1,5 +1,5 @@
 // pages/ManagePage.jsx
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../dashboard/Sidebar';
 import Navbar from '../dashboard/Navbar';

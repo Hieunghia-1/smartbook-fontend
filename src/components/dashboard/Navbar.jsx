@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 const DashboardNavbar = ({ sidebarOpen, setSidebarOpen }) => {
   const { user } = useAuth();
+  
 
   return (
     <Navbar bg="light" expand="lg" className="shadow-sm">

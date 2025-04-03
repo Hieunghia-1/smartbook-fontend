@@ -5,7 +5,7 @@ import { useAuth } from './context/AuthContext';
 
 function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   return (
     <header>
@@ -27,9 +27,10 @@ function Header() {
             </div>
           ) : (
             <div>
-              <button onClick={logout} className='btn btn-outline-primary me-2'>Logout</button>
-              <button className='btn btn-primary m-2'>Profile</button>
-              <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Manage</button>
+              <button onClick={logout} className='btn btn-outline-primary me-2'>Đăng xuất</button>
+              <button className='btn btn-primary m-2'>Hồ sơ của {user.name}</button>
+              <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Quản lý</button>
+              <button className='btn btn-primary m-2'>Giỏ hàng</button>
             </div>
           )}
 

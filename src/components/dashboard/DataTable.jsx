@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Table, Pagination, Button } from 'react-bootstrap';
 
-const DataTable = ({ data, columns, onEdit, onDelete }) => {
+const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // Filter columns to exclude hidden fields
+  const visibleColumns = columns.filter(
+    column => !hiddenFields.includes(column.key)
+  );
 
   // Pagination logic
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -19,39 +24,42 @@ const DataTable = ({ data, columns, onEdit, onDelete }) => {
           <Table striped bordered hover>
             <thead className="table-dark">
               <tr>
-                {columns.map((column) => (
+                {visibleColumns.map((column) => (
                   <th key={column.key}>{column.title}</th>
                 ))}
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {columns.map((column) => (
-                    <td key={column.key}>
-                      {column.render ? column.render(row[column.key], row) : row[column.key]}
+              {paginatedData.map((row, rowIndex) => {
+                const rowId = row._id || row.id || rowIndex;
+                return (
+                  <tr key={rowId}>
+                    {visibleColumns.map((column) => (
+                      <td key={column.key}>
+                        {column.render ? column.render(row[column.key], row) : row[column.key]}
+                      </td>
+                    ))}
+                    <td>
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => onEdit(row)}
+                        className="me-2"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => onDelete(row)}
+                      >
+                        Delete
+                      </Button>
                     </td>
-                  ))}
-                  <td>
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm" 
-                      onClick={() => onEdit(row)}
-                      className="me-2"
-                    >
-                      Edit
-                    </Button>
-                    <Button 
-                      variant="outline-danger" 
-                      size="sm" 
-                      onClick={() => onDelete(row)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </div>
@@ -63,20 +71,20 @@ const DataTable = ({ data, columns, onEdit, onDelete }) => {
             {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} entries
           </div>
           <Pagination>
-            <Pagination.First 
-              onClick={() => setCurrentPage(1)} 
-              disabled={currentPage === 1} 
+            <Pagination.First
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
             />
-            <Pagination.Prev 
-              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} 
-              disabled={currentPage === 1} 
+            <Pagination.Prev
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
             />
-            
+
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const page = currentPage <= 3 
-                ? i + 1 
-                : currentPage >= totalPages - 2 
-                  ? totalPages - 4 + i 
+              const page = currentPage <= 3
+                ? i + 1
+                : currentPage >= totalPages - 2
+                  ? totalPages - 4 + i
                   : currentPage - 2 + i;
               return page > 0 && page <= totalPages ? (
                 <Pagination.Item
@@ -88,14 +96,14 @@ const DataTable = ({ data, columns, onEdit, onDelete }) => {
                 </Pagination.Item>
               ) : null;
             })}
-            
-            <Pagination.Next 
-              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
-              disabled={currentPage === totalPages} 
+
+            <Pagination.Next
+              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
             />
-            <Pagination.Last 
-              onClick={() => setCurrentPage(totalPages)} 
-              disabled={currentPage === totalPages} 
+            <Pagination.Last
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
             />
           </Pagination>
         </div>

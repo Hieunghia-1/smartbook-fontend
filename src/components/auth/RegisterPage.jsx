@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUser, 
@@ -11,6 +10,7 @@ import {
   faCircleNotch
 } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { registerAPI } from '../api/authApi';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -18,7 +18,7 @@ function RegisterPage() {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,16 +63,18 @@ function RegisterPage() {
 
     try {
       // Gọi API đăng ký
-      const response = await axios.post('http://localhost:3001/api/auth/register', {
+      const newUser = {
         name: formData.fullName,
         username: formData.email,
         email: formData.email,
         phone: formData.phone,
         password: formData.password
-      });
+      }
+
+      const response = await registerAPI(newUser);
 
       // Xử lý kết quả thành công
-      const { message } = response.data;
+      const { message } = response;
       
       // Hiển thị thông báo và chuyển hướng
       alert(message || 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản');

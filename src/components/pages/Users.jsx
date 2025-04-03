@@ -1,85 +1,144 @@
 // pages/Users.jsx
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import DataTable from '../dashboard/DataTable';
+import AddUserModal from './AddUsersModal';
+import EdituserModal from './EditUsersModal';
+import DeleteConfirmationModal from './DeleteUsersModal';
+import {
+  getUsers,
+  addUser,
+  updateUser,
+  deleteUser
+} from '../api/userApi';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [alert, setAlert] = useState({ show: false, message: '', variant: '' });
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    // Simulate API call
-    const fetchUsers = async () => {
-      try {
-        // Mock data
-        const mockUsers = Array.from({ length: 45 }, (_, i) => ({
-          id: i + 1,
-          name: `User ${i + 1}`,
-          email: `user${i + 1}@example.com`,
-          role: i % 3 === 0 ? 'Admin' : i % 2 === 0 ? 'Editor' : 'Viewer',
-          status: i % 4 === 0 ? 'Inactive' : 'Active',
-          lastLogin: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-        }));
-        
-        setUsers(mockUsers);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, []);
 
-  const handleEdit = (user) => {
-    console.log('Edit user:', user);
-    // Open modal or navigate to edit page
+  const fetchUsers = async () => {
+    try {
+      // Mock data
+      const mockUsers = await getUsers();
+      const lstUser = mockUsers.map((user, index) => ({
+        ...user,
+        id: index + 1
+      }));
+      setUsers(lstUser);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (user) => {
-    if (window.confirm(`Are you sure you want to delete ${user.name}?`)) {
-      setUsers(users.filter((u) => u.id !== user.id));
+  // Add Product
+  const handleAdd = async (user) => {
+    try {
+      const newUser = await addUser(user);
+      setUsers([...users, newUser]);
+      showAlert('Product added successfully!', 'success');
+    } catch (error) {
+      showAlert('Failed to add product', 'danger');
+      throw error;
     }
+  };
+
+  // Edit Product
+  const handleEdit = (user) => {
+    setCurrentUser(user);
+    setShowModal(true);
+  };
+
+  // Delete Product
+  const handleDeleteClick = (user) => {
+    setCurrentUser(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async (user) => {
+    try {
+      await deleteUser(user._id);
+      setUsers(users.filter(p => p._id !== user._id));
+      showAlert('User deleted successfully!', 'success');
+    } catch (error) {
+      showAlert('Failed to delete product', 'danger');
+    }
+  };
+
+  const handleSave = async (updatedUser) => {
+    try {
+      const response = await updateUser(updatedUser._id, updatedUser);
+      setUsers(users.map(user =>
+        user.id === updatedUser.id ? updatedUser : user
+      ));
+      if (response.status === 200) {
+        showAlert('Product updated successfully!', 'success');
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
+  };
+
+  const showAlert = (message, variant) => {
+    setAlert({ show: true, message, variant });
+    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
   };
 
   const columns = [
     { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
+    { key: 'username', title: 'Username' },
+    { key: 'password', title: 'Password' },
     { key: 'email', title: 'Email' },
-    { 
-      key: 'role', 
-      title: 'Role',
-      render: (value) => (
-        <span className={`badge ${
-          value === 'Admin' ? 'bg-purple' :
-          value === 'Editor' ? 'bg-primary' : 'bg-success'
-        }`}>
-          {value}
-        </span>
-      )
-    },
-    { 
-      key: 'status', 
-      title: 'Status',
-      render: (value) => (
-        <span className={`badge ${value === 'Active' ? 'bg-success' : 'bg-danger'}`}>
-          {value}
-        </span>
-      )
-    },
-    { key: 'lastLogin', title: 'Last Login' },
+    { key: 'phone', title: 'Phone' },
+    // {
+    //   key: 'role',
+    //   title: 'Role',
+    //   render: (value) => (
+    //     <span className={`badge ${value === 'Admin' ? 'bg-purple' :
+    //       value === 'Editor' ? 'bg-primary' : 'bg-success'
+    //       }`}>
+    //       {value}
+    //     </span>
+    //   )
+    // },
+    // {
+    //   key: 'status',
+    //   title: 'Status',
+    //   render: (value) => (
+    //     <span className={`badge ${value === 'Active' ? 'bg-success' : 'bg-danger'}`}>
+    //       {value}
+    //     </span>
+    //   )
+    // },
+    // { key: 'lastLogin', title: 'Last Login' },
   ];
 
   return (
     <div className="container-fluid pt-4">
+      {alert.show && (
+        <Alert variant={alert.variant} onClose={() => setAlert({ ...alert, show: false })} dismissible>
+          {alert.message}
+        </Alert>
+      )}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>User Management</h2>
-        <Button variant="primary">
+        <Button variant="primary" onClick={() => setShowAddModal(true)}>
           Add New User
         </Button>
       </div>
-      
+
       {loading ? (
         <div className="d-flex justify-content-center my-5">
           <div className="spinner-border text-primary" role="status">
@@ -91,9 +150,30 @@ const Users = () => {
           data={users}
           columns={columns}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
         />
       )}
+
+      {/* Modals */}
+      <AddUserModal
+        show={showAddModal}
+        handleClose={() => setShowAddModal(false)}
+        handleAdd={handleAdd}
+      />
+
+      <DeleteConfirmationModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        user={currentUser}
+        handleDelete={handleDeleteConfirm}
+      />
+
+      <EdituserModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        user={currentUser}
+        handleSave={handleSave}
+      />
     </div>
   );
 };

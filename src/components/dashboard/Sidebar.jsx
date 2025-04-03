@@ -19,8 +19,8 @@ const Sidebar = ({ sidebarOpen }) => {
     const navItems = [
         { name: 'Dashboard', icon: HouseDoor, path: '/manage' },
         { name: 'Users', icon: People, path: '/manage/users' },
-        { name: 'Products', icon: Box, path: '/manage/products' },
-        { name: 'Settings', icon: Gear, path: '/manage/settings' },
+        { name: 'Sản phẩm', icon: Box, path: '/manage/products' },
+        { name: 'Đơn hàng', icon: Gear, path: '/manage/settings' },
     ];
 
     return (
@@ -30,7 +30,7 @@ const Sidebar = ({ sidebarOpen }) => {
         >
             <div className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 {sidebarOpen ? (
-                    <span className="fs-4">Admin Panel</span>
+                    <span className="fs-4">Admin</span>
                 ) : (
                     <span className="fs-4">AP</span>
                 )}

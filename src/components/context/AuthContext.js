@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setIsAuthenticated(true);
     setUser(userData);
-    navigate('/manage');
+    navigate('/dashboard');
   };
 
   const logout = () => {
@@ -41,7 +41,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
+    setIsLoading(false);
     navigate('/login');
+  };
+
+  const hasRole = (requiredRole) => {
+    if (!user || !user.role) return false;
+    return user.role === requiredRole;
+  };
+
+  // Check if user has any of the required roles
+  const hasAnyRole = (requiredRoles) => {
+    if (!user || !user.role) return false;
+    return requiredRoles.includes(user.role);
   };
 
   return (
@@ -50,8 +62,12 @@ export const AuthProvider = ({ children }) => {
         user,
         isAuthenticated,
         isLoading,
+        isAdmin: user?.role === 'admin',
         login,
-        logout
+        logout,
+        hasRole,
+        hasAnyRole,
+        checkAuthStatus
       }}
     >
       {children}
