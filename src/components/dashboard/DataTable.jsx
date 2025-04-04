@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Pagination, Button } from 'react-bootstrap';
 
-const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'] }) => {
+const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'], showActions = true }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -27,7 +27,7 @@ const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'] }) 
                 {visibleColumns.map((column) => (
                   <th key={column.key}>{column.title}</th>
                 ))}
-                <th>Actions</th>
+                {showActions && (<th>Actions</th>)}
               </tr>
             </thead>
             <tbody>
@@ -40,7 +40,8 @@ const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'] }) 
                         {column.render ? column.render(row[column.key], row) : row[column.key]}
                       </td>
                     ))}
-                    <td>
+                    {showActions && (
+                    <td>                      
                       <Button
                         variant="outline-primary"
                         size="sm"
@@ -56,7 +57,7 @@ const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'] }) 
                       >
                         Delete
                       </Button>
-                    </td>
+                    </td>)}
                   </tr>
                 );
               })}

@@ -20,7 +20,7 @@ const Sidebar = ({ sidebarOpen }) => {
         { name: 'Dashboard', icon: HouseDoor, path: '/manage' },
         { name: 'Users', icon: People, path: '/manage/users' },
         { name: 'Sản phẩm', icon: Box, path: '/manage/products' },
-        { name: 'Đơn hàng', icon: Gear, path: '/manage/settings' },
+        { name: 'Đơn hàng', icon: Gear, path: '/manage/orders' },
     ];
 
     return (
@@ -40,7 +40,8 @@ const Sidebar = ({ sidebarOpen }) => {
                 {navItems.map((item) => (
                     <Nav.Item key={item.name}>
                         <Nav.Link
-                            onClick={() => navigate(item.path)}
+                            onClick={() => 
+                                navigate(item.path)}
                             active={location.pathname === item.path}
                             className="text-white d-flex align-items-center"
                         >

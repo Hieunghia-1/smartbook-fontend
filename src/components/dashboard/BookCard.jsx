@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../../resources/css/sidebar.css';
+import { useAuth } from '../context/AuthContext'
 
 const BookCard = ({ bookId, book, onAddToCart }) => {
     const [imageSrc, setImageSrc] = useState('');
+    const { isAuthenticated } = useAuth();
+    
 
     useEffect(() => {
         // Dynamic import
@@ -16,7 +19,7 @@ const BookCard = ({ bookId, book, onAddToCart }) => {
             <img src={imageSrc} alt={book.name} />
             <h3>{book.name}</h3>
             <p>{book.price} VND</p>
-            <button onClick={() => onAddToCart(book)}>Add to Cart</button>
+            { isAuthenticated && <button onClick={() => onAddToCart(book)}>Add to Cart</button> }            
         </div>
     );
 };

@@ -9,32 +9,50 @@ import {
 const Body = () => {
 
     const [books, setBooks] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
     useEffect(() => {
         // Simulate API call
         const fetchProducts = async () => {
-          try {
-            const list = await getProducts();                    
-            setBooks(list);
-          } catch (error) {
-            console.error('Error fetching products:', error);
-          }
+            try {
+                const list = await getProducts();
+                setBooks(list);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
         };
 
         fetchProducts();
-      }, []);
+    }, []);
 
     const categories = ['All', ...new Set(books.map(book => book.category))];
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    const [cart, setCart] = useState([]);
 
     const filteredBooks = selectedCategory === 'All'
         ? books
         : books.filter(book => book.category === selectedCategory);
 
-    const addToCart = (book) => {
-        setCart([...cart, book]);
-        alert(`${book.name} added to cart!`);
+    const addToCart = (product) => {
+        try {
+            const cartString = sessionStorage.getItem('cart') || '[]';
+            const currentCart = JSON.parse(cartString);
+
+            const existingItem = currentCart.find(item => item._id === product._id);
+
+            const updatedCart = existingItem
+                ? currentCart.map(item =>
+                    item._id === product._id
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                )
+                : [...currentCart, { ...product, quantity: 1 }];
+
+            sessionStorage.setItem('cart', JSON.stringify(updatedCart));
+            alert(`${product.name} added to cart!`);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            sessionStorage.setItem('cart', '[]');
+            alert('Could not add item to cart. Please try again.');
+        }
     };
 
     return (

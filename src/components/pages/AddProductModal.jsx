@@ -87,7 +87,7 @@ const AddProductModal = ({
                         <Form.Control
                             type="number"
                             name="price"
-                            step="0.01"
+                            step="1000"
                             min="0"
                             value={newProduct.price}
                             onChange={handleChange}

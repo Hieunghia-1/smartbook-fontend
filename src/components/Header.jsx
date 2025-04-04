@@ -2,10 +2,11 @@ import React from 'react';
 import logo from '../resources/img/logo.png'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import BookSearch from './dashboard/BookSearch';
 
 function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, user, isAdmin } = useAuth();
 
   return (
     <header>
@@ -17,7 +18,8 @@ function Header() {
             </a>
           </div>
           <form className='d-flex'>
-            <input className="form-control input-sm me-2" type="search" placeholder="Nhập nội dung tìm kiếm..." aria-label="Search" />
+            <BookSearch/>
+            
             <button className="btn btn-outline-success" type="submit">Tìm kiếm</button>
           </form>
           {!isAuthenticated ? (
@@ -28,9 +30,9 @@ function Header() {
           ) : (
             <div>
               <button onClick={logout} className='btn btn-outline-primary me-2'>Đăng xuất</button>
-              <button className='btn btn-primary m-2'>Hồ sơ của {user.name}</button>
-              <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Quản lý</button>
-              <button className='btn btn-primary m-2'>Giỏ hàng</button>
+              <button className='btn btn-primary m-2'>Hồ sơ của {user.name}</button>              
+              <button onClick={() => navigate('/order')} className='btn btn-primary m-2'>Giỏ hàng</button>
+              {isAdmin() && <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Quản lý</button> }
             </div>
           )}
 

@@ -78,7 +78,7 @@ function LoginPage() {
 
       // Lưu thông tin đăng nhập
       login(token, {
-        id: user.id,
+        id: user._id,
         name: user.name || formData.username,
         email: user.email || formData.username,
         role: user.role
@@ -128,7 +128,7 @@ function LoginPage() {
 
   return (
     <div className="container-fluid vh-100 bg-light">
-      <div className="row justify-content-center align-items-center h-100">
+      <div className="root row justify-content-center align-items-center h-100">
         <div className="col-md-8 col-lg-6 col-xl-4">
           <div className="card shadow-sm">
             <div className="card-body p-4 p-md-5">

@@ -102,27 +102,7 @@ const Users = () => {
     { key: 'password', title: 'Password' },
     { key: 'email', title: 'Email' },
     { key: 'phone', title: 'Phone' },
-    // {
-    //   key: 'role',
-    //   title: 'Role',
-    //   render: (value) => (
-    //     <span className={`badge ${value === 'Admin' ? 'bg-purple' :
-    //       value === 'Editor' ? 'bg-primary' : 'bg-success'
-    //       }`}>
-    //       {value}
-    //     </span>
-    //   )
-    // },
-    // {
-    //   key: 'status',
-    //   title: 'Status',
-    //   render: (value) => (
-    //     <span className={`badge ${value === 'Active' ? 'bg-success' : 'bg-danger'}`}>
-    //       {value}
-    //     </span>
-    //   )
-    // },
-    // { key: 'lastLogin', title: 'Last Login' },
+    
   ];
 
   return (

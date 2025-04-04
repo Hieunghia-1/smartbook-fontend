@@ -39,9 +39,9 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    sessionStorage.removeItem('cart');
     setIsAuthenticated(false);
     setUser(null);
-    setIsLoading(false);
     navigate('/login');
   };
 
@@ -56,13 +56,17 @@ export const AuthProvider = ({ children }) => {
     return requiredRoles.includes(user.role);
   };
 
+  const isAdmin = () => {
+    return user && user.role === 'admin';
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated,
         isLoading,
-        isAdmin: user?.role === 'admin',
+        isAdmin,
         login,
         logout,
         hasRole,
