@@ -10,7 +10,6 @@ axios.interceptors.request.use(function (config) {
 
 export const getMe = async () => {
     const response = await axios.get(`${API_URL}/me`);
-    console.log(response.data)
     return response.data;
 };
 

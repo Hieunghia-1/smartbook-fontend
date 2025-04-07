@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../resources/css/shoppingCart.css';
+import { useAuth } from '../context/AuthContext';
+import { SearchProvider } from '../context/SearchContext';
+import { saveOrder } from '../api/orderApi'
+import { formatCurrency } from '../../ultils';
 
 import Header from '../Header';
 import Footer from '../Footer';
-import { AuthProvider, useAuth } from '../context/AuthContext';
 import Image from './Image';
-import { saveOrder } from '../api/orderApi'
+
+import '../../resources/css/shoppingCart.css';
 
 function ShoppingCart() {
 
@@ -68,15 +71,15 @@ function ShoppingCart() {
 
     // Calculate total price for each item
     const calculateItemTotal = (price, quantity) => {
-        return (price * quantity);
+        return formatCurrency(price * quantity);
     };
 
     // Calculate grand total
     const calculateGrandTotal = () => {
-        return cartItems.reduce(
+        return formatCurrency(cartItems.reduce(
             (total, item) => total + (item.price * item.quantity),
             0
-        );
+        ));
     };
 
     // Handle payment
@@ -84,7 +87,7 @@ function ShoppingCart() {
         // In a real app, you would process payment here
         let total = calculateGrandTotal();
         let payment = 'Cash on Delivery';
-        let items = cartItems.map((product) => ({            
+        let items = cartItems.map((product) => ({
             product: product._id,
             quantity: product.quantity,
             price: product.price
@@ -96,11 +99,11 @@ function ShoppingCart() {
         navigate('/'); // Redirect to home after payment
     };
     return (
-        <AuthProvider>
+        <SearchProvider>
             <div className='container root'>
                 <Header />
                 <div className="shopping-cart">
-                    <h1>Your Shopping Cart</h1>
+                    <h1>Giỏ hàng của bạn</h1>
 
                     {cartItems.length === 0 ? (
                         <div className="empty-cart">
@@ -113,11 +116,11 @@ function ShoppingCart() {
                                 {cartItems.map(item => (
                                     <div key={item._id} className="cart-item">
                                         <div className="item-image">
-                                            <Image bookId={item.imageUrl} name={item.name} />                                        
+                                            <Image bookId={item.imageUrl} name={item.name} />
                                         </div>
                                         <div className="item-details">
                                             <h3>{item.name}</h3>
-                                            <p>Price: {item.price} VND</p>
+                                            <p>Giá: {formatCurrency(item.price)}</p>
                                             <div className="quantity-control">
                                                 <button
                                                     onClick={() => updateQuantity(item._id, item.quantity - 1)}
@@ -130,12 +133,12 @@ function ShoppingCart() {
                                                     +
                                                 </button>
                                             </div>
-                                            <p>Total: {calculateItemTotal(item.price, item.quantity)} VND</p>
+                                            <p>Tổng: {calculateItemTotal(item.price, item.quantity)}</p>
                                             <button
                                                 className="remove-btn"
                                                 onClick={() => removeItem(item._id)}
                                             >
-                                                Remove
+                                                Xóa
                                             </button>
                                         </div>
                                     </div>
@@ -143,28 +146,28 @@ function ShoppingCart() {
                             </div>
 
                             <div className="cart-summary">
-                                <h2>Order Summary</h2>
+                                <h2>Tổng kết đơn hàng</h2>
                                 <div className="summary-row">
-                                    <span>Subtotal:</span>
-                                    <span>{calculateGrandTotal()} VND</span>
+                                    <span>Tổng cộng:</span>
+                                    <span>{calculateGrandTotal()}</span>
                                 </div>
                                 <div className="summary-row">
-                                    <span>Shipping:</span>
-                                    <span>Free</span>
+                                    <span>Phí giao hàng:</span>
+                                    <span>Miễn phí</span>
                                 </div>
                                 <div className="summary-row total">
-                                    <span>Total:</span>
-                                    <span>{calculateGrandTotal()} VND</span>
+                                    <span>Tổng thành tiền:</span>
+                                    <span>{calculateGrandTotal()}</span>
                                 </div>
                                 <div className="summary-row total">
-                                    <span>Payment:</span>
+                                    <span>Phương thức thanh toán:</span>
                                     <span>Cash on Delivery</span>
                                 </div>
                                 <button
                                     className="checkout-btn"
                                     onClick={handlePayment}
                                 >
-                                    Proceed to Payment
+                                    Tiến hành thanh toán
                                 </button>
                             </div>
                         </>
@@ -172,8 +175,7 @@ function ShoppingCart() {
                 </div>
                 <Footer />
             </div>
-
-        </AuthProvider>
+        </SearchProvider>
     )
 }
 

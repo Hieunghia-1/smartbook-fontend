@@ -11,7 +11,6 @@ axios.interceptors.request.use(function (config) {
 
 export const getProducts = async () => {
   const response = await axios.get(API_URL);
-  console.log(response.data)
   return response.data;
 };
 
@@ -27,4 +26,11 @@ export const updateProduct = async (id, productData) => {
 
 export const deleteProduct = async (id) => {
   await axios.delete(`${API_URL}/${id}`);
+};
+
+export const searchProduct = async (search) => {
+  const response = await axios.post(`${API_URL}/search`, {
+      q: search
+  });
+  return response.data;
 };

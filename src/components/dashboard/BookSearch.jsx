@@ -1,52 +1,60 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-
+import { Button, Form, FloatingLabel } from 'react-bootstrap';
+import { useSearch } from '../context/SearchContext';
 
 const BookSearch = () => {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { performSearch, resetSearch } = useSearch();
 
-//   const history = useHistory();
-
-  const handleSearch = async (e) => {
-    setQuery(e.target.value);
-    if (e.target.value.length > 2) {
-      setLoading(true);
-      try {
-        const response = await axios.get(`http://localhost:3001/api/manage/books/search?q=${encodeURIComponent(e.target.value)}`);
-        setSuggestions(response.data); // Giả sử API trả về danh sách sách
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      }
-      setLoading(false);
-    } else {
-      setSuggestions([]);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      performSearch(query);
     }
   };
 
-  const handleSelectBook = (bookId) => {
-    // history.push(`/book/${bookId}`); // Chuyển đến trang chi tiết sách
+  const handleReset = () => {
+    setQuery('');
+    resetSearch();
+  };
+
+  const handleChange = (e) => {
+    let value = e.target.value;
+    if (value.trim().length === 0) {
+      handleReset();
+    } else {
+      setQuery(e.target.value)
+    }
   };
 
   return (
-    <div className="form-control input-sm me-2" aria-label="Search">
-      <input 
-        className="search-input"
-        type="search"
-        placeholder="Tìm kiếm sách..."
-        value={query}
-        onChange={handleSearch}
-      />
-      {loading && <p>Đang tải...</p>}
-      <ul>
-        {suggestions.map((book) => (
-          <li key={book.id} onClick={() => handleSelectBook(book.id)}>
-            {book.title}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Form className="d-flex align-items-center" onSubmit={(e) => {
+      handleSearch(e);
+    }}>
+      <div className="me-2" style={{ flexGrow: 1 }}>
+        <FloatingLabel
+          controlId="searchInput"
+          label="Tìm kiếm sách ... "
+          className="mb-0" // Remove default bottom margin
+        >
+          <Form.Control
+            type="text"
+            placeholder="Search books"
+            style={{ height: '58px' }} // Match button height
+            value={query}
+            onChange={(e) => handleChange(e)}
+          />
+        </FloatingLabel>
+      </div>
+
+      <Button
+        variant="outline-success"
+        type="submit"
+        style={{ height: '58px' }} // Match input height
+      >
+        Tìm kiếm
+      </Button>
+    </Form>
   );
 };
 

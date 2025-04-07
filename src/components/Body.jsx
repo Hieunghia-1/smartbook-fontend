@@ -5,11 +5,12 @@ import '../resources/css/sidebar.css';
 import {
     getProducts,
 } from './api/productsApi'
+import { useSearch } from './context/SearchContext';
 
 const Body = () => {
-
     const [books, setBooks] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+    const { isSearch, searchResults } = useSearch();
 
     useEffect(() => {
         // Simulate API call
@@ -25,11 +26,13 @@ const Body = () => {
         fetchProducts();
     }, []);
 
-    const categories = ['All', ...new Set(books.map(book => book.category))];
+    const productsToDisplay = isSearch ? searchResults : books;
 
-    const filteredBooks = selectedCategory === 'All'
-        ? books
-        : books.filter(book => book.category === selectedCategory);
+    const categories = ['Tất cả', ...new Set(productsToDisplay.map(book => book.category))];
+
+    const filteredBooks = selectedCategory === 'Tất cả'
+        ? productsToDisplay
+        : productsToDisplay.filter(book => book.category === selectedCategory);
 
     const addToCart = (product) => {
         try {
@@ -57,18 +60,18 @@ const Body = () => {
 
     return (
         <div className="d-flex">
-
             <Sidebar
                 categories={categories}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
             />
             <div className="flex-grow-1 p-4">
-                <h2>Nội dung chính</h2>
+                {isSearch && <h2>Kết quả tìm kiếm</h2>}
+                {!isSearch && <h2>Tất cả</h2>}
                 <p>Chọn một danh mục sách từ menu bên trái để xem chi tiết.</p>
                 <div className="alert alert-info">
                     <div className="main-content">
-                        <h2>{selectedCategory} Books</h2>
+                        <h2>{selectedCategory}</h2>
                         <div className="books-grid">
                             {filteredBooks.map(book => (
                                 <BookCard

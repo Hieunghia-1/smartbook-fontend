@@ -2,6 +2,7 @@ import React from 'react';
 import '../../resources/css/sidebar.css';
 
 const Sidebar = ({ categories, selectedCategory, onSelectCategory }) => {
+
     return (
         <div className="sidebar bg-white">
             <div className="sidebar-header">

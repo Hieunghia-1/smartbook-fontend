@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.removeItem('cart');
     setIsAuthenticated(false);
     setUser(null);
-    navigate('/login');
+    // navigate('/login');
   };
 
   const hasRole = (requiredRole) => {

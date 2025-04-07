@@ -17,11 +17,7 @@ function Header() {
               <img src={logo} alt="Logo" className="img-fluid" />
             </a>
           </div>
-          <form className='d-flex'>
-            <BookSearch/>
-            
-            <button className="btn btn-outline-success" type="submit">Tìm kiếm</button>
-          </form>
+          <BookSearch />
           {!isAuthenticated ? (
             <div className='d-flex'>
               <button onClick={() => navigate('/login')} className='btn btn-outline-primary me-2'>Đăng nhập</button>
@@ -30,9 +26,9 @@ function Header() {
           ) : (
             <div>
               <button onClick={logout} className='btn btn-outline-primary me-2'>Đăng xuất</button>
-              <button className='btn btn-primary m-2'>Hồ sơ của {user.name}</button>              
+              <button className='btn btn-primary m-2'>Hồ sơ của {user.name}</button>
               <button onClick={() => navigate('/order')} className='btn btn-primary m-2'>Giỏ hàng</button>
-              {isAdmin() && <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Quản lý</button> }
+              {isAdmin() && <button onClick={() => navigate('/manage')} className='btn btn-danger me-2'>Quản lý</button>}
             </div>
           )}
 

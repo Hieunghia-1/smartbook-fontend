@@ -3,6 +3,7 @@ import { Alert, Button, Badge } from 'react-bootstrap';
 import { getOrders, updateOrderStatus } from '../api/orderApi';
 import DataTable from '../dashboard/DataTable';
 import OrderDetailModal from '../pages/OrderDetailModal';
+import { formatCurrency } from '../../ultils';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +15,6 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const data = await getOrders();
-      console.log(data);
       setOrders(data);
     } catch (error) {
       setAlert({ show: true, message: 'Lỗi khi tải đơn hàng!', variant: 'danger' });
@@ -63,11 +63,11 @@ const Orders = () => {
           {value}
         </Badge>
       )
-    },
+    },  
     {
       key: 'totalPrice',
       title: 'Total',
-      render: (totalPrice) =>`${totalPrice.toLocaleString()}đ`
+      render: (totalPrice) =>formatCurrency(totalPrice)
     },
     {
       key: 'actions',

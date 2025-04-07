@@ -14,7 +14,7 @@ const OrderDetailModal = ({ show, handleClose, order, handleStatusUpdate }) => {
   const total = order.orderDetails.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <Modal show={show} onHide={handleClose} centered size="lg">
+    <Modal show={show} onHide={handleClose} dialogClassName="modal-dialog-centered">
       <Modal.Header closeButton>
         <Modal.Title>Chi tiết đơn hàng #{order.name}</Modal.Title>
       </Modal.Header>

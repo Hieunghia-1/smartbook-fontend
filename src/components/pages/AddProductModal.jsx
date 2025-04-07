@@ -33,7 +33,6 @@ const AddProductModal = ({
         setError(null);
 
         try {
-            console.log(newProduct)
             // Validate required fields
             if (!newProduct.name || !newProduct.category) {
                 throw new Error('Name and category are required');

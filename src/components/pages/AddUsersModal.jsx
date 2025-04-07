@@ -32,7 +32,6 @@ const AddUserModal = ({
         setError(null);
 
         try {
-            console.log(newUser)
             // Validate required fields
             if (!newUser.username || !newUser.password) {
                 throw new Error('Username and Password are required');
