@@ -27,7 +27,7 @@ const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'], sh
                 {visibleColumns.map((column) => (
                   <th key={column.key}>{column.title}</th>
                 ))}
-                {showActions && (<th>Actions</th>)}
+                {showActions && (<th>Hành động</th>)}
               </tr>
             </thead>
             <tbody>
@@ -48,14 +48,14 @@ const DataTable = ({ data, columns, onEdit, onDelete, hiddenFields = ['_id'], sh
                         onClick={() => onEdit(row)}
                         className="me-2"
                       >
-                        Edit
+                        Cập nhật
                       </Button>
                       <Button
                         variant="outline-danger"
                         size="sm"
                         onClick={() => onDelete(row)}
                       >
-                        Delete
+                        Xóa
                       </Button>
                     </td>)}
                   </tr>

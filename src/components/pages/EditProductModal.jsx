@@ -32,11 +32,11 @@ const EditProductModal = ({
   return (
     <Modal show={show} onHide={handleClose} centered >
       <Modal.Header closeButton>
-        <Modal.Title>Edit Product</Modal.Title>
+        <Modal.Title>Cập nhật</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <FloatingLabel controlId="name" label="Product Name" className="mb-3">
+          <FloatingLabel controlId="name" label="Tên sản phẩm" className="mb-3">
             <Form.Control
               type="text"
               name="name"
@@ -47,7 +47,7 @@ const EditProductModal = ({
           </FloatingLabel>
 
           <Form.Group className="mb-3">
-            <Form.Label>Category</Form.Label>
+            <Form.Label>Thể loại</Form.Label>
             <Form.Select
               name="category"
               value={editedProduct?.category || ''}
@@ -61,11 +61,11 @@ const EditProductModal = ({
             </Form.Select>
           </Form.Group>
 
-          <FloatingLabel controlId="price" label="Price" className="mb-3">
+          <FloatingLabel controlId="price" label="Giá" className="mb-3">
             <Form.Control
               type="number"
               name="price"
-              step="0.01"
+              step="1000"
               min="0"
               value={editedProduct?.price || 0}
               onChange={handleChange}
@@ -73,7 +73,7 @@ const EditProductModal = ({
             />
           </FloatingLabel>
 
-          <FloatingLabel controlId="stock" label="Stock Quantity" className="mb-3">
+          <FloatingLabel controlId="stock" label="Số lượng" className="mb-3">
             <Form.Control
               type="number"
               name="stock"
@@ -83,7 +83,7 @@ const EditProductModal = ({
               required
             />
           </FloatingLabel>
-          <FloatingLabel controlId="imageUrl" label="Image" className="mb-3">
+          <FloatingLabel controlId="imageUrl" label="Hình ảnh" className="mb-3">
             <Form.Control
               type="text"
               name="imageUrl"
@@ -95,10 +95,10 @@ const EditProductModal = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Cancel
+            Hủy
           </Button>
           <Button variant="primary" type="submit">
-            Save Changes
+            Lưu thay đổi
           </Button>
         </Modal.Footer>
       </Form>

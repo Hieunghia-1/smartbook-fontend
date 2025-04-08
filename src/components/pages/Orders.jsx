@@ -44,20 +44,20 @@ const Orders = () => {
 
   const columns = [
     { key: '_id' },
-    { key: 'name', title: 'Order Name' },
+    { key: 'name', title: 'Mã đơn hàng' },
     {
       key: 'customer',
-      title: 'Customer',
-      render: (customer) => `${customer.email}`
+      title: 'Tên khách hàng',
+      render: (customer) => `${customer.fullname}`
     },
     {
       key: 'createdAt',
-      title: 'Date',
+      title: 'Ngày tạo',
       render: (value) => new Date(value).toLocaleString()
     },
     {
       key: 'status',
-      title: 'Status',
+      title: 'Trạng thái',
       render: (value) => (
         <Badge bg={value === 'Đã giao' ? 'success' : value === 'Đang giao' ? 'warning' : value === 'Đã hủy' ? 'danger' : 'secondary'}>
           {value}
@@ -66,12 +66,12 @@ const Orders = () => {
     },  
     {
       key: 'totalPrice',
-      title: 'Total',
+      title: 'Tổng tiền',
       render: (totalPrice) =>formatCurrency(totalPrice)
     },
     {
       key: 'actions',
-      title: 'Actions',
+      title: 'Hành động',
       render: (value, order) => (
         <Button variant="outline-primary" size="sm" onClick={() => handleDetail(order)}>
           Chi tiết
@@ -89,7 +89,7 @@ const Orders = () => {
       )}
 
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Order Management</h2>
+        <h2>Quản lý đơn hàng</h2>
       </div>
 
       {loading ? (

@@ -50,7 +50,7 @@ const AddProductModal = ({
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Add New Product</Modal.Title>
+                <Modal.Title>Thêm mới sản phẩm</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
@@ -67,7 +67,7 @@ const AddProductModal = ({
                     </FloatingLabel>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Category</Form.Label>
+                        <Form.Label>Thể loại</Form.Label>
                         <Form.Select
                             name="category"
                             value={newProduct.category || ''}
@@ -82,7 +82,7 @@ const AddProductModal = ({
                         </Form.Select>
                     </Form.Group>
 
-                    <FloatingLabel controlId="price" label="Price" className="mb-3">
+                    <FloatingLabel controlId="price" label="Giá" className="mb-3">
                         <Form.Control
                             type="number"
                             name="price"
@@ -117,7 +117,7 @@ const AddProductModal = ({
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
-                        Cancel
+                        Hủy
                     </Button>
                     <Button variant="primary" type="submit" disabled={isLoading}>
                         {isLoading ? 'Adding...' : 'Add Product'}

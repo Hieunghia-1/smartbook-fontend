@@ -98,10 +98,10 @@ const Users = () => {
 
   const columns = [
     { key: 'id', title: 'ID' },
-    { key: 'username', title: 'Username' },
-    { key: 'password', title: 'Password' },
+    { key: 'fullname', title: 'Họ và tên' },
+    { key: 'username', title: 'Tên đăng nhập' },
     { key: 'email', title: 'Email' },
-    { key: 'phone', title: 'Phone' },
+    { key: 'phone', title: 'Số điện thoại' },
     
   ];
 
@@ -113,9 +113,9 @@ const Users = () => {
         </Alert>
       )}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>User Management</h2>
+        <h2>Quản lý người dùng</h2>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
-          Add New User
+          Thêm người dùng mới
         </Button>
       </div>
 

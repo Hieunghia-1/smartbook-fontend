@@ -19,6 +19,7 @@ const OrderDetailModal = ({ show, handleClose, order, handleStatusUpdate }) => {
         <Modal.Title>Chi tiết đơn hàng #{order.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <p><strong>Tên khách hàng:</strong> {order.customer.fullname}</p>
         <p><strong>Số điện thoại:</strong> {order.customer.phone}</p>
         <p><strong>Email:</strong> {order.customer.email}</p>
         <p><strong>Ngày tạo:</strong> {new Date(order.createdAt).toLocaleString()}</p>

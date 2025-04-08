@@ -11,6 +11,7 @@ import {
   updateProduct,
   deleteProduct
 } from '../api/productsApi';
+import { formatCurrency } from '../../ultils';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -100,28 +101,28 @@ const Products = () => {
   const columns = [
     { key: '_id' },
     { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Product Name' },
-    { key: 'category', title: 'Category' },
+    { key: 'name', title: 'Tên sản phẩm' },
+    { key: 'category', title: 'Thể loại' },
     {
       key: 'price',
-      title: 'Price',
-      render: (value) => `$${value.toFixed(2)}`
+      title: 'Giá',
+      render: (value) => formatCurrency(value)
     },
     {
       key: 'stock',
-      title: 'Stock',
+      title: 'Số lượng tồn kho',
       render: (value) => <span className={value === 0 ? 'text-danger' : ''}>{value}</span>
     },
     {
       key: 'status',
-      title: 'Status',
+      title: 'Trạng thái',
       render: (value) => (
         <Badge bg={value === 'In Stock' ? 'success' : 'danger'}>
           {value}
         </Badge>
       )
     },
-    { key: 'imageUrl', title: 'Image URL' },
+    { key: 'imageUrl', title: 'URL' },
   ];
 
   return (
@@ -133,10 +134,10 @@ const Products = () => {
       )}
 
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Product Management</h2>
+        <h2>Quản lý sản phẩm</h2>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
           <i className="bi bi-plus-lg me-2"></i>
-          Add Product
+          Thêm sản phẩm
         </Button>
       </div>
 

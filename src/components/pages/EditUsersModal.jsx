@@ -32,11 +32,21 @@ const EdituserModal = ({
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Add New User</Modal.Title>
+                <Modal.Title>Cập nhật</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
-                <Modal.Body>                
-                    <FloatingLabel controlId="username" label="Username" className="mb-3">
+                <Modal.Body>
+                    <FloatingLabel controlId="fullname" label="Họ và tên" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="fullname"
+                            value={editedUser?.fullname || ''}
+                            onChange={handleChange}
+                            required
+                        />
+                    </FloatingLabel>
+
+                    <FloatingLabel controlId="username" label="Tên đăng nhập" className="mb-3">
                         <Form.Control
                             type="text"
                             name="username"
@@ -56,7 +66,7 @@ const EdituserModal = ({
                         />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="phone" label="Phone number" className="mb-3">
+                    <FloatingLabel controlId="phone" label="Số điện thoại" className="mb-3">
                         <Form.Control
                             type="text"
                             name="phone"
@@ -66,23 +76,21 @@ const EdituserModal = ({
                         />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="password" label="Password" className="mb-3">
+                    <FloatingLabel controlId="password" label="Mật khẩu" className="mb-3">
                         <Form.Control
                             type="password"
                             name="password"
-                            value={editedUser?.password || ''}
                             onChange={handleChange}
-                            required
                         />
                     </FloatingLabel>
 
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Cancel
+                        Hủy
                     </Button>
                     <Button variant="primary" type="submit">
-                        Save Changes
+                        Lưu thay đổi
                     </Button>
                 </Modal.Footer>
             </Form>

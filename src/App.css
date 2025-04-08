@@ -2,6 +2,11 @@
     background-color: #a2d1fc;
 }
 
+.logo {
+  width: 200px;
+  height: 200px;
+}
+
 .sidebar {
     width: 280px;
     min-height: 100vh;

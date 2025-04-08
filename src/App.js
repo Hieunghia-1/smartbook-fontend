@@ -14,7 +14,6 @@ import Orders from './components/pages/Orders';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './resources/css/nav.css'
-import './resources/css/header.css'
 
 
 function App() {

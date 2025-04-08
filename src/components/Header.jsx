@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../resources/img/logo.png'
+import logo from '../resources/img/smartbook.png'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import BookSearch from './dashboard/BookSearch';

@@ -8,6 +8,7 @@ const AddUserModal = ({
     handleAdd
 }) => {
     const [newUser, setNewUser] = useState({
+        fullname: '',
         username: '',
         password: '',
         email: '',
@@ -52,13 +53,23 @@ const AddUserModal = ({
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Add New User</Modal.Title>
+                <Modal.Title>Thêm mới người dùng</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
                     {error && <Alert variant="danger">{error}</Alert>}
 
-                    <FloatingLabel controlId="username" label="Username" className="mb-3">
+                    <FloatingLabel controlId="fullname" label="Họ và tên" className="mb-3">
+                        <Form.Control
+                            type="text"
+                            name="fullname"
+                            value={newUser.fullname}
+                            onChange={handleChange}
+                            required
+                        />
+                    </FloatingLabel>
+
+                    <FloatingLabel controlId="username" label="Tên đăng nhập" className="mb-3">
                         <Form.Control
                             type="text"
                             name="username"
@@ -78,7 +89,7 @@ const AddUserModal = ({
                         />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="phone" label="Phone number" className="mb-3">
+                    <FloatingLabel controlId="phone" label="Số điện thoại" className="mb-3">
                         <Form.Control
                             type="text"
                             name="phone"                            
@@ -88,7 +99,7 @@ const AddUserModal = ({
                         />
                     </FloatingLabel>
 
-                    <FloatingLabel controlId="password" label="Password" className="mb-3">
+                    <FloatingLabel controlId="password" label="Mật khẩu" className="mb-3">
                         <Form.Control
                             type="password"
                             name="password"                    
@@ -101,10 +112,10 @@ const AddUserModal = ({
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
-                        Cancel
+                        Hủy
                     </Button>
                     <Button variant="primary" type="submit" disabled={isLoading}>
-                        {isLoading ? 'Adding...' : 'Add Product'}
+                        {isLoading ? 'Adding...' : 'Add User'}
                     </Button>
                 </Modal.Footer>
             </Form>

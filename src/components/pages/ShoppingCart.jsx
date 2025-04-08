@@ -161,7 +161,7 @@ function ShoppingCart() {
                                 </div>
                                 <div className="summary-row total">
                                     <span>Phương thức thanh toán:</span>
-                                    <span>Cash on Delivery</span>
+                                    <span>Thanh toán khi nhận hàng</span>
                                 </div>
                                 <button
                                     className="checkout-btn"

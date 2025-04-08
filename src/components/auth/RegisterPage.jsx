@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUser, 
-  faEnvelope, 
-  faLock, 
+import {
+  faUser,
+  faEnvelope,
+  faLock,
   faIdCard,
   faPhone,
   faCircleNotch
@@ -17,6 +17,7 @@ function RegisterPage() {
     fullName: '',
     email: '',
     phone: '',
+    username: '',
     password: '',
     confirmPassword: '',
   });
@@ -33,6 +34,7 @@ function RegisterPage() {
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email không hợp lệ';
     if (!formData.phone) newErrors.phone = 'Số điện thoại là bắt buộc';
     else if (!/^\d{10,11}$/.test(formData.phone)) newErrors.phone = 'Số điện thoại không hợp lệ';
+    if (!formData.username.trim()) newErrors.username = 'Tên đăng nhập là bắt buộc';
     if (!formData.password) newErrors.password = 'Mật khẩu là bắt buộc';
     else if (formData.password.length < 6) newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Mật khẩu không khớp';
@@ -65,7 +67,7 @@ function RegisterPage() {
       // Gọi API đăng ký
       const newUser = {
         name: formData.fullName,
-        username: formData.email,
+        username: formData.username,
         email: formData.email,
         phone: formData.phone,
         password: formData.password
@@ -75,17 +77,17 @@ function RegisterPage() {
 
       // Xử lý kết quả thành công
       const { message } = response;
-      
+
       // Hiển thị thông báo và chuyển hướng
       alert(message || 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản');
       navigate('/login'); // Chuyển về trang login sau khi đăng ký
-      
+
     } catch (error) {
       // Xử lý lỗi từ API
       if (error.response) {
         // Lỗi từ phía server (4xx, 5xx)
         const { data } = error.response;
-        
+
         if (data.errors) {
           // Lỗi validation từ server
           const serverErrors = {};
@@ -196,6 +198,28 @@ function RegisterPage() {
                   </div>
                 </div>
 
+                {/* Tên đăng nhập */}
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">Tên đăng nhập</label>
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <FontAwesomeIcon icon={faUser} />
+                    </span>
+                    <input
+                      type="text"
+                      className={`form-control ${errors.username ? 'is-invalid' : ''}`}
+                      id="username"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      placeholder="Nhập tên đăng nhập"
+                      disabled={isSubmitting}
+                    />
+                    {errors.username && (
+                      <div className="invalid-feedback">{errors.username}</div>
+                    )}
+                  </div>
+                </div>
                 {/* Mật khẩu */}
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">Mật khẩu</label>

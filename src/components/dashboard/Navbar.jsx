@@ -29,7 +29,7 @@ const DashboardNavbar = ({ sidebarOpen, setSidebarOpen }) => {
           
           <div className="d-flex align-items-center">
             <PersonCircle size={24} className="me-2 text-primary" />
-            <span className="d-none d-md-inline">{user?.name || 'Admin'}</span>
+            <span className="d-none d-md-inline">{user?.fullname || 'Admin'}</span>
           </div>
         </div>
       </Container>
